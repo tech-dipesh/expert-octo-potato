@@ -1,13 +1,20 @@
+import uvicorn
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI()
+from src.accuracy.routes import router as accuracy
+from src.elexon.snapshot import FILE
+from src.forecasts.routes import router as forecasts
+from src.infra import env
+from src.infra.errors import register
 
+app = FastAPI(title="api")
+app.add_middleware(CORSMiddleware, allow_origins=env.ORIGINS, allow_methods=["GET"], allow_headers=["*"])
+register(app)
+app.include_router(forecasts)
+app.include_router(accuracy)
 
-@app.get("/")
-async def read_root():
-    return {"Hello": "World"}
+@app.get("/health")
+def health(): return {"ok": True, "snapshot": FILE.exists()}
 
-
-@app.get("/items/{item_id}")
-async def read_item(item_id: int, q: str | None = None):
-    return {"item_id": item_id, "q": q}
+def dev(): uvicorn.run("src.main:app", port=env.PORT, reload=True)
