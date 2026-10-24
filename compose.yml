@@ -1,0 +1,18 @@
+services:
+  api:
+    build: ./api
+    ports:
+      - "8000:8000"
+    environment:
+      ORIGINS: "*"
+    volumes:
+      - ./api/data:/app/data:ro
+  web:
+    build:
+      context: ./web
+      args:
+        VITE_API: http://localhost:8000
+    ports:
+      - "5173:5173"
+    depends_on:
+      - api

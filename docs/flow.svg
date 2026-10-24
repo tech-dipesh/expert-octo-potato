@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 150" role="img" aria-label="Data flow from Elexon to the React pages">
+  <style>
+    text { font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
+    .box { fill: #fcfcfc; stroke: #148937; stroke-width: 2; }
+    .t { font-size: 15px; font-weight: 600; fill: #2b2a2a; }
+    .s { font-size: 11px; fill: #5a5856; }
+    .arrow { stroke: #148937; stroke-width: 2; stroke-dasharray: 6 6; fill: none; animation: flow 1.2s linear infinite; }
+    .head { fill: #148937; }
+    @keyframes flow { to { stroke-dashoffset: -12; } }
+    @media (prefers-reduced-motion: reduce) { .arrow { animation: none; } }
+  </style>
+  <g>
+    <rect class="box" x="8" y="40" width="150" height="70" rx="6"/>
+    <text class="t" x="83" y="68" text-anchor="middle">Elexon BMRS</text>
+    <text class="s" x="83" y="88" text-anchor="middle">FUELHH and WINDFOR</text>
+    <rect class="box" x="194" y="40" width="150" height="70" rx="6"/>
+    <text class="t" x="269" y="68" text-anchor="middle">uv run pull</text>
+    <text class="s" x="269" y="88" text-anchor="middle">retry, dedupe, skip nulls</text>
+    <rect class="box" x="380" y="40" width="150" height="70" rx="6"/>
+    <text class="t" x="455" y="68" text-anchor="middle">wind.json.gz</text>
+    <text class="s" x="455" y="88" text-anchor="middle">read-only snapshot</text>
+    <rect class="box" x="566" y="40" width="150" height="70" rx="6"/>
+    <text class="t" x="641" y="68" text-anchor="middle">FastAPI</text>
+    <text class="s" x="641" y="88" text-anchor="middle">publish &lt;= cutoff, error stats</text>
+    <rect class="box" x="752" y="40" width="200" height="70" rx="6"/>
+    <text class="t" x="852" y="68" text-anchor="middle">React</text>
+    <text class="s" x="852" y="88" text-anchor="middle">forecast page, accuracy page</text>
+  </g>
+  <g>
+    <path class="arrow" d="M158 75 H186"/><path class="head" d="M194 75 l-8 -5 v10 z"/>
+    <path class="arrow" d="M344 75 H372"/><path class="head" d="M380 75 l-8 -5 v10 z"/>
+    <path class="arrow" d="M530 75 H558"/><path class="head" d="M566 75 l-8 -5 v10 z"/>
+    <path class="arrow" d="M716 75 H744"/><path class="head" d="M752 75 l-8 -5 v10 z"/>
+  </g>
+</svg>

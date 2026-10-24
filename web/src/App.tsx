@@ -12,7 +12,7 @@ export function App() {
     <div className="flex min-h-screen flex-col">
       <header className="bg-night">
         <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-between gap-x-8 px-4 sm:px-6">
-          <span className="py-4 text-lg font-semibold text-white">Wind forecast desk</span>
+          <span className="py-4 text-lg font-semibold text-white">Wind Change Prediction</span>
           <nav aria-label="Main" className="flex gap-6">
             <NavLink to="/" end className={link}>Forecast</NavLink>
             <NavLink to="/accuracy" className={link}>Accuracy</NavLink>
