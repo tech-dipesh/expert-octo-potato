@@ -1,12 +1,14 @@
 from collections import defaultdict
 from collections.abc import Callable, Iterable
-from datetime import time, timedelta
+from datetime import UTC, date, datetime, time, timedelta
 from functools import lru_cache
 from math import sqrt
-from src.accuracy.schema import Group, Stats, Summary
+
+from src.accuracy.schema import Group, Margin, Stats, Summary
 from src.elexon.snapshot import load
 from src.forecasts.service import STEP, at, cutoff_at, day_starts, latest_before, ts
 from src.infra.window import DAYS, FIRST_DAY
+
 
 def percentile(sorted_vals: list[float], q: float) -> float:
     k = (len(sorted_vals) - 1) * q
@@ -53,3 +55,16 @@ def by_hour(cutoff: time) -> list[Group]: return grouped([((s % 86400) // STEP, 
 def by_day(cutoff: time) -> list[Group]: return grouped((at(s).date().isoformat(), f, a) for s, f, a in decision_rows(cutoff))
 
 def by_horizon(size: int) -> list[Group]: return grouped(horizon_items(size), lambda lo: f"{lo}-{lo + size}h")
+
+MIN_SAMPLES = 144
+
+def margin(day: date, cutoff: time) -> Margin:
+    limit = ts(datetime.combine(day, time(), UTC)) - 86400
+    rows = [r for r in decision_rows(cutoff) if r[0] < limit]
+    errs = sorted(f - a for _, f, a in rows)
+    value = round(max(percentile(errs, 0.9), 0), 1) if len(errs) >= MIN_SAMPLES else None
+    return Margin(day=day, cutoff=cutoff, margin_mw=value, days_used=len({s // 86400 for s, _, _ in rows}), samples=len(errs))
+
+def worst(cutoff: time, limit: int) -> list[Group]: return sorted(by_day(cutoff), key=lambda g: g.stats.mae or 0, reverse=True)[:limit]
+
+def by_level(cutoff: time, size: int) -> list[Group]: return grouped([(int(a // size) * size, f, a) for _, f, a in decision_rows(cutoff)], lambda lo: f"{lo:,}-{lo + size:,}")

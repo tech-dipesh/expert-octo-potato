@@ -1,5 +1,7 @@
-from datetime import time
+from datetime import date, time
+
 from pydantic import BaseModel
+
 
 class Stats(BaseModel):
     n: int
@@ -22,3 +24,10 @@ class Summary(BaseModel):
     slots: int
     coverage_pct: float
     stats: Stats
+
+class Margin(BaseModel):
+    day: date
+    cutoff: time
+    margin_mw: float | None
+    days_used: int
+    samples: int
