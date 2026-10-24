@@ -1,3 +1,4 @@
+import { Link } from "react-router"
 import { useMeta } from "@/api/meta"
 import type { Group, Summary } from "@/api/types"
 import { useApi } from "@/api/use-api"
@@ -6,7 +7,7 @@ import { Figures } from "@/components/figures"
 import { Empty, Gate } from "@/components/gate"
 import { Panel } from "@/components/panel"
 import { Bars } from "@/components/bars"
-import { fmt, maybe, maybeSigned, shortDay } from "@/format"
+import { fmt, longDay, maybe, maybeSigned, shortDay } from "@/format"
 import { useParam } from "@/use-param"
 
 function Headline({ data }: { data: Summary }) {
@@ -36,6 +37,8 @@ export function Component() {
   const horizon = useApi<Group[]>("/v1/accuracy/by-horizon")
   const hour = useApi<Group[]>(`/v1/accuracy/by-hour?cutoff=${cutoff}`)
   const day = useApi<Group[]>(`/v1/accuracy/by-day?cutoff=${cutoff}`)
+  const level = useApi<Group[]>(`/v1/accuracy/by-level?cutoff=${cutoff}`)
+  const worst = useApi<Group[]>(`/v1/accuracy/worst?cutoff=${cutoff}&limit=5`)
   const miss = [{ key: "mae", name: "Average miss", fill: "var(--color-brand)" }, { key: "big", name: "Large miss (9 in 10 stay below)", fill: "var(--color-ink)" }]
   return (
     <div className="flex flex-col gap-8">
@@ -55,6 +58,21 @@ export function Component() {
       </Panel>
       <Panel title="Which days were over-promised" note="Average lean per delivery day. Dark bars above zero mean the forecast promised more wind than arrived, which is the costly direction.">
         <Gate api={day}>{(groups) => <Bars split data={groups.map((g) => ({ label: shortDay(g.label), bias: g.stats.bias ?? 0 }))} bars={[{ key: "bias", name: "Lean", fill: "var(--color-brand)" }]} />}</Gate>
+      </Panel>
+      <Panel title="Accuracy by wind level" note="Average miss grouped by how much wind actually blew, in MW. Shows whether the forecast struggles more in light or strong wind.">
+        <Gate api={level}>{(groups) => <Bars data={groups.map((g) => ({ label: g.label, mae: g.stats.mae ?? 0 }))} bars={[miss[0]]} />}</Gate>
+      </Panel>
+      <Panel title="The five hardest days" note="Days with the largest average miss at your decision time. Open one to see the forecast next to what happened.">
+        <Gate api={worst}>{(groups) => (
+          <ol className="flex flex-col divide-y divide-line">
+            {groups.map((g) => (
+              <li key={g.label} className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 py-3">
+                <Link to={`/?day=${g.label}&cutoff=${cutoff}&hindsight=1`} className="text-lg font-medium text-ink underline decoration-brand underline-offset-4 hover:bg-brand-tint">{longDay(g.label)}</Link>
+                <span className="tabular-nums">{(g.stats.bias ?? 0) > 0 ? `Promised ${fmt(g.stats.bias ?? 0)} MW too much wind` : `Undersold wind by ${fmt(Math.abs(g.stats.bias ?? 0))} MW`} on average, average miss {maybe(g.stats.mae)} MW</span>
+              </li>
+            ))}
+          </ol>
+        )}</Gate>
       </Panel>
     </div>
   )
