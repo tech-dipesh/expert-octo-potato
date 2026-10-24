@@ -10,6 +10,7 @@ dependencies = [
 [project.scripts]
 dev = "src.main:dev"
 pull = "src.elexon.pull:main"
+test = "pytest:console_main"
 
 [build-system]
 requires = ["hatchling"]
@@ -21,6 +22,7 @@ dev-mode-dirs = ["."]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+addopts = "-q --cov=src --cov-fail-under=75"
 
 [dependency-groups]
 dev = [
