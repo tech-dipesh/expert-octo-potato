@@ -1,10 +1,30 @@
 [project]
 name = "api"
-version = "0.0.1"
-requires-python = ">=3.13"
+version = "0.1.0"
+requires-python = ">=3.14"
 dependencies = [
-    "fastapi[standard]>=0.161.1",
+    "fastapi>=0.161.1",
+    "uvicorn>=0.54.0",
 ]
 
-[tool.uv]
-package = false
+[project.scripts]
+dev = "src.main:dev"
+pull = "src.elexon.pull:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
+dev-mode-dirs = ["."]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+    "pytest>=9.1.1",
+    "pytest-cov>=7.1.0",
+]
