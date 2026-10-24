@@ -52,3 +52,11 @@ export interface Summary {
   coverage_pct: number
   stats: Stats
 }
+
+export interface Margin {
+  day: string
+  cutoff: string
+  margin_mw: number | null
+  days_used: number
+  samples: number
+}
