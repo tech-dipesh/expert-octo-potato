@@ -22,7 +22,7 @@ def clear():
 @pytest.fixture
 def client(tmp_path, monkeypatch):
     file = tmp_path / "wind.json.gz"
-    forecast = [[ts(f"2026-01-01T{hm}:00Z"), s, g] for s in STARTS for hm, g in (("08:00", 100), ("09:00", 120), ("10:00", 200))]
+    forecast = [[ts(f"2026-01-01T{hm}:00Z"), s, g] for s in STARTS[::2] for hm, g in (("08:00", 100), ("09:00", 120), ("10:00", 200))]
     with gzip.open(file, "wt") as f: json.dump({"built": "test", "actual": [[s, 150] for s in STARTS], "forecast": forecast}, f)
     monkeypatch.setattr(snapshot, "FILE", file)
     clear()

@@ -15,7 +15,7 @@ def history(tmp_path, monkeypatch):
     file = tmp_path / "wind.json.gz"
     starts = {d: [ts(f"2026-01-{d:02d}T00:00:00Z") + i * 1800 for i in range(48)] for d in DAYS}
     miss = lambda d: 500 if d == 3 else 100
-    forecast = [[ts(f"2026-01-{d - 1:02d}T08:00:00Z"), s, 1000 + miss(d)] for d in DAYS for s in starts[d]]
+    forecast = [[ts(f"2026-01-{d - 1:02d}T08:00:00Z"), s, 1000 + miss(d)] for d in DAYS for s in starts[d][::2]]
     actual = [[s, 1000] for d in DAYS for s in starts[d]]
     with gzip.open(file, "wt") as f: json.dump({"built": "test", "actual": actual, "forecast": forecast}, f)
     monkeypatch.setattr(snapshot, "FILE", file)

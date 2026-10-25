@@ -1,5 +1,6 @@
 from bisect import bisect_right
 from datetime import UTC, date, datetime, time, timedelta
+
 from src.elexon.snapshot import Snapshot
 from src.forecasts.schema import Coverage, DayForecast, Point
 
@@ -17,7 +18,7 @@ def day_starts(day: date) -> list[int]:
 def cutoff_at(day: date, cutoff: time) -> datetime: return datetime.combine(day - timedelta(days=1), cutoff, UTC)
 
 def latest_before(snap: Snapshot, start: int, limit: int) -> tuple[int, float] | None:
-    pubs, gens = snap.forecasts.get(start, ([], []))
+    pubs, gens = snap.forecasts.get(start - start % 3600, ([], []))
     i = bisect_right(pubs, limit)
     return (pubs[i - 1], gens[i - 1]) if i else None
 

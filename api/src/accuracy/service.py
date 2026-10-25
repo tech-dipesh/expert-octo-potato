@@ -41,7 +41,7 @@ def decision_rows(cutoff: time) -> tuple[tuple[int, float, float], ...]:
 @lru_cache(maxsize=8)
 def horizon_items(size: int) -> tuple[tuple[int, float, float], ...]:
     snap = load()
-    return tuple((int(h // size) * size, g, snap.actual[s]) for s, (pubs, gens) in snap.forecasts.items() if s in snap.actual for p, g in zip(pubs, gens) if (h := (s - p) / 3600) >= 0)
+    return tuple((int(h // size) * size, g, snap.actual[t]) for s, (pubs, gens) in snap.forecasts.items() for t in (s, s + STEP) if t in snap.actual for p, g in zip(pubs, gens) if (h := (t - p) / 3600) >= 0)
 
 def summary(cutoff: time) -> Summary:
     rows = decision_rows(cutoff)

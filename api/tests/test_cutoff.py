@@ -18,3 +18,10 @@ def test_nothing_published_yet(client):
     body = first(client, "07:00")
     assert body["points"][0]["forecast"] is None
     assert body["coverage"]["forecast"] == 0 and body["newest_publish"] is None
+
+
+def test_hourly_forecast_is_held_across_both_half_hours(client):
+    p = first(client, "09:00")["points"]
+    assert p[0]["forecast"] == p[1]["forecast"] == 120
+    assert p[0]["published"] == p[1]["published"]
+    assert p[1]["horizon_h"] == 15.5
