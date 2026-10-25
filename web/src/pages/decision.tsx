@@ -94,8 +94,8 @@ export function Component() {
         <Field label={`Slide the decision time: ${cutoff}`}>
           <input type="range" min={0} max={47} step={1} value={toSlot(cutoff)} aria-valuetext={cutoff} className="w-64 accent-brand" onChange={(e) => setCutoff(fromSlot(Number(e.target.value)))} />
         </Field>
-        <label className="flex items-center gap-2 pb-2 text-md text-ink cursor-pointer" >
-          <input type="checkbox" checked={hindsight === "1"} onChange={(e) => setHindsight(e.target.checked ? "1" : "0")} />
+        <label className="flex items-center gap-2 pb-2 text-md text-ink">
+          <input type="checkbox" checked={hindsight === "1"} onChange={(e) => setHindsight(e.target.checked ? "1" : "0")} className="cursor-pointer"/>
           Compare with what actually happened
         </label>
       </div>
