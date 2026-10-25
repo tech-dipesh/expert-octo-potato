@@ -17,12 +17,12 @@ export function WindChart({ rows, hindsight }: { rows: WindRow[]; hindsight: boo
     <ResponsiveContainer width="100%" height={320}>
       <ComposedChart data={rows} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
         <CartesianGrid stroke="var(--color-line)" vertical={false} />
-        <XAxis dataKey="time" tick={tick} stroke="var(--color-line)" />
+        <XAxis dataKey="time" tick={tick} interval="equidistantPreserveStart" stroke="var(--color-line)" />
         <YAxis width={56} tick={tick} tickFormatter={fmt} stroke="var(--color-line)" />
         <Tooltip formatter={show} />
         <Legend verticalAlign="top" height={32} />
         {rows.some((r) => r.band) && <Area dataKey="band" name="Safe range" stroke="none" fill="var(--color-brand-tint)" fillOpacity={1} />}
-        <Line dataKey="forecast" name="Forecast" stroke="var(--color-brand)" strokeWidth={2.5} dot={false} />
+        <Line dataKey="forecast" name="Forecast" type="stepAfter" stroke="var(--color-brand)" strokeWidth={2.5} dot={false} />
         {hindsight && <Line dataKey="actual" name="Actual" stroke="var(--color-ink)" strokeWidth={2} strokeDasharray="5 4" dot={false} />}
       </ComposedChart>
     </ResponsiveContainer>

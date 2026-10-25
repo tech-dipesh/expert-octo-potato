@@ -34,14 +34,14 @@ function Forecast({ data, hindsight, margin }: { data: DayForecast; hindsight: b
         { label: "Half-hours with a forecast", value: `${coverage.forecast} of ${coverage.slots}` },
         ...(margin ? [{ label: "Margin to plan around", value: cut === null ? "not yet" : `${fmt(cut)} MW`, note: cut === null ? "needs 3 earlier days of results" : `P90 miss over ${margin.days_used} earlier days` }] : []),
       ]} />
-      <Panel title="Forecast wind generation" note={`Megawatts averaged over each half-hour, in ${data.tz}. Each half-hour uses the newest forecast available at ${stamp(data.cutoff_at)}.${cut === null ? "" : " The shaded range is the forecast minus the margin, built only from days that were fully scored before this decision."}`}>
+      <Panel title="Forecast wind generation" note={`Megawatts averaged over each half-hour, in ${data.tz}. Elexon forecasts wind hourly, so each hour is held across both half-hours. Each uses the newest forecast available at ${stamp(data.cutoff_at)}.${cut === null ? "" : " The shaded range is the forecast minus the margin, built only from days that were fully scored before this decision."}`}>
         <WindChart rows={rows} hindsight={hindsight} />
         <button onClick={save} className="mt-4 rounded-md border border-ink px-3 py-1.5 text-md text-ink hover:bg-ink hover:text-white active:bg-night">Download CSV</button>
       </Panel>
       <details className="border border-line bg-panel">
         <summary className="cursor-pointer px-4 py-3 text-ink hover:bg-brand-tint">Half-hour detail</summary>
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[32rem] text-left text-md tabular-nums">
+          <table className="w-full min-w-lg text-left text-md tabular-nums">
             <thead>
               <tr className="border-b border-line text-sm">
                 <th scope="col" className="px-4 py-2 font-medium">Time</th>
@@ -94,7 +94,7 @@ export function Component() {
         <Field label={`Slide the decision time: ${cutoff}`}>
           <input type="range" min={0} max={47} step={1} value={toSlot(cutoff)} aria-valuetext={cutoff} className="w-64 accent-brand" onChange={(e) => setCutoff(fromSlot(Number(e.target.value)))} />
         </Field>
-        <label className="flex items-center gap-2 pb-2 text-md text-ink">
+        <label className="flex items-center gap-2 pb-2 text-md text-ink cursor-pointer" >
           <input type="checkbox" checked={hindsight === "1"} onChange={(e) => setHindsight(e.target.checked ? "1" : "0")} />
           Compare with what actually happened
         </label>

@@ -14,7 +14,7 @@ export function Bars({ data, bars, split }: { data: Record<string, string | numb
     <ResponsiveContainer width="100%" height={280}>
       <BarChart data={data} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
         <CartesianGrid stroke="var(--color-line)" vertical={false} />
-        <XAxis dataKey="label" tick={tick} stroke="var(--color-line)" />
+        <XAxis dataKey="label" tick={tick} interval="equidistantPreserveStart" stroke="var(--color-line)" />
         <YAxis width={56} tick={tick} tickFormatter={fmt} stroke="var(--color-line)" />
         <Tooltip formatter={(v) => (typeof v === "number" ? `${fmt(v)} MW` : "none")} cursor={{ fill: "var(--color-brand-tint)" }} />
         {bars.length > 1 && <Legend position="top" height={32} />}
